@@ -2,9 +2,6 @@ import {
   LayoutDashboard,
   Package,
   Users,
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
   Truck,
   CreditCard,
   FileText,
@@ -14,23 +11,6 @@ import { type SidebarData } from '../types'
 import { type Translation } from '@/locales'
 
 export const getSidebarData = (t: Translation): SidebarData => ({
-  teams: [
-    {
-      name: t.teams.shadcnAdmin,
-      logo: Command,
-      plan: 'Shipping Platform',
-    },
-    {
-      name: t.teams.acmeInc,
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: t.teams.acmeCorp,
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-  ],
   navGroups: [
     {
       title: t.nav.general,

@@ -4,12 +4,14 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
   SidebarRail,
 } from '@/components/ui/sidebar'
-// import { AppTitle } from './app-title'
+import { Logo } from '@/assets/logo'
 import { getSidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
-import { TeamSwitcher } from './team-switcher'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
@@ -19,11 +21,18 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>
-        <TeamSwitcher teams={sidebarData.teams} />
-
-        {/* Replace <TeamSwitch /> with the following <AppTitle />
-         /* if you want to use the normal app title instead of TeamSwitch dropdown */}
-        {/* <AppTitle /> */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size='lg' className='hover:bg-transparent'>
+              <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+                <Logo className='size-4' />
+              </div>
+              <div className='flex flex-1 items-center text-start'>
+                <span className='truncate font-semibold'>SyriaShip</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (
