@@ -305,7 +305,7 @@ export const en = {
 
   // Teams
   teams: {
-    shadcnAdmin: 'SyriaShip',
+    roadlink: 'Roadlink',
     acmeInc: 'Acme Inc',
     acmeCorp: 'Acme Corp.',
   },
@@ -407,7 +407,7 @@ export const en = {
       title: 'Profile',
       description: 'This is how others will see you on the site.',
       username: 'Username',
-      usernamePlaceholder: 'shadcn',
+      usernamePlaceholder: 'roadlink',
       usernameDescription: 'This is your public display name. It can be your real name or a pseudonym. You can only change this once every 30 days.',
       email: 'Email',
       emailPlaceholder: 'Select a verified email to display',

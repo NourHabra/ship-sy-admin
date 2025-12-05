@@ -3,4 +3,7 @@ import { ComingSoon } from '@/components/coming-soon'
 
 export const Route = createFileRoute('/_authenticated/help-center/')({
   component: ComingSoon,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

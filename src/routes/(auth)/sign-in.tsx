@@ -9,4 +9,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute('/(auth)/sign-in')({
   component: SignIn,
   validateSearch: searchSchema,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

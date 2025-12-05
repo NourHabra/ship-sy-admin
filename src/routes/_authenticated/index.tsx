@@ -3,4 +3,7 @@ import { Dashboard } from '@/features/dashboard'
 
 export const Route = createFileRoute('/_authenticated/')({
   component: Dashboard,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

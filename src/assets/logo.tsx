@@ -1,24 +1,21 @@
-import { type SVGProps } from 'react'
+import { type HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
+import logoLight from './Roadlink-logo-light-theme.png'
+import logoDark from './Roadlink-logo-dark-theme.png'
 
-export function Logo({ className, ...props }: SVGProps<SVGSVGElement>) {
+export function Logo({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <svg
-      id='syriaship-logo'
-      viewBox='0 0 24 24'
-      xmlns='http://www.w3.org/2000/svg'
-      height='24'
-      width='24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      className={cn('size-6', className)}
-      {...props}
-    >
-      <title>SyriaShip</title>
-      <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
-    </svg>
+    <div className={cn('size-6', className)} {...props}>
+      <img
+        src={logoLight}
+        alt='Roadlink'
+        className='h-full w-full object-contain dark:hidden'
+      />
+      <img
+        src={logoDark}
+        alt='Roadlink'
+        className='hidden h-full w-full object-contain dark:block'
+      />
+    </div>
   )
 }

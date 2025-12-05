@@ -6,6 +6,7 @@ import {
   CreditCard,
   FileText,
   UserPlus,
+  ShieldCheck,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 import { type Translation } from '@/locales'
@@ -62,69 +63,37 @@ export const getSidebarData = (t: Translation): SidebarData => ({
         },
       ],
     },
-    // Hidden for later use
-    // {
-    //   title: t.nav.pages,
-    //   items: [
-    //     {
-    //       title: 'Auth',
-    //       icon: ShieldCheck,
-    //       items: [
-    //         {
-    //           title: t.auth.signIn,
-    //           url: '/sign-in',
-    //         },
-    //         {
-    //           title: `${t.auth.signIn} (2 Col)`,
-    //           url: '/sign-in-2',
-    //         },
-    //         {
-    //           title: t.auth.signUp,
-    //           url: '/sign-up',
-    //         },
-    //         {
-    //           title: t.auth.forgotPassword,
-    //           url: '/forgot-password',
-    //         },
-    //         {
-    //           title: t.auth.otp,
-    //           url: '/otp',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       title: t.errors.internalServerError,
-    //       icon: Bug,
-    //       items: [
-    //         {
-    //           title: t.errors.unauthorized,
-    //           url: '/errors/unauthorized',
-    //           icon: Lock,
-    //         },
-    //         {
-    //           title: t.errors.forbidden,
-    //           url: '/errors/forbidden',
-    //           icon: UserX,
-    //         },
-    //         {
-    //           title: t.errors.notFound,
-    //           url: '/errors/not-found',
-    //           icon: FileX,
-    //         },
-    //         {
-    //           title: t.errors.internalServerError,
-    //           url: '/errors/internal-server-error',
-    //           icon: ServerOff,
-    //         },
-    //         {
-    //           title: t.errors.maintenanceError,
-    //           url: '/errors/maintenance-error',
-    //           icon: Construction,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      title: t.nav.pages,
+      items: [
+        {
+          title: 'Auth',
+          icon: ShieldCheck,
+          items: [
+            {
+              title: t.auth.signIn,
+              url: '/sign-in',
+            },
+            {
+              title: `${t.auth.signIn} (2 Col)`,
+              url: '/sign-in-2',
+            },
+            {
+              title: t.auth.signUp,
+              url: '/sign-up',
+            },
+            {
+              title: t.auth.forgotPassword,
+              url: '/forgot-password',
+            },
+            {
+              title: t.auth.otp,
+              url: '/otp',
+            },
+          ],
+        },
+      ],
+    },
     // {
     //   title: t.nav.other,
     //   items: [

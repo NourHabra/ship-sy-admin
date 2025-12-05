@@ -16,4 +16,7 @@ const taskSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/shipments/')({
   validateSearch: taskSearchSchema,
   component: Tasks,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

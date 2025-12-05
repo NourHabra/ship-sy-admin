@@ -307,7 +307,7 @@ export const ar: Translation = {
 
   // Teams
   teams: {
-    shadcnAdmin: 'SyriaShip',
+    roadlink: 'Roadlink',
     acmeInc: 'Acme Inc',
     acmeCorp: 'Acme Corp.',
   },
@@ -409,7 +409,7 @@ export const ar: Translation = {
       title: 'الملف الشخصي',
       description: 'هذه هي الطريقة التي سيراك بها الآخرون على الموقع.',
       username: 'اسم المستخدم',
-      usernamePlaceholder: 'shadcn',
+      usernamePlaceholder: 'roadlink',
       usernameDescription: 'هذا هو اسم العرض العام الخاص بك. يمكن أن يكون اسمك الحقيقي أو اسماً مستعاراً. يمكنك تغيير هذا مرة واحدة فقط كل 30 يوماً.',
       email: 'البريد الإلكتروني',
       emailPlaceholder: 'اختر بريداً إلكترونياً موثقاً للعرض',

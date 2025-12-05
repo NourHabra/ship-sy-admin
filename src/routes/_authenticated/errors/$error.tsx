@@ -10,6 +10,9 @@ import { UnauthorisedError } from '@/features/errors/unauthorized-error'
 
 export const Route = createFileRoute('/_authenticated/errors/$error')({
   component: RouteComponent,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })
 
 function RouteComponent() {

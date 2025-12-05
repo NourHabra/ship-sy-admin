@@ -13,11 +13,8 @@ export function CreateDriverProfile() {
             <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
                 <div className='container flex h-16 items-center justify-between'>
                     <div className='flex items-center gap-3'>
-                        <Logo className='h-8 w-8' />
-                        <div className='flex flex-col'>
-                            <span className='text-xl font-semibold leading-tight'>SyriaShip</span>
-                            {/* <span className='text-xs text-muted-foreground leading-tight'>{t.driverProfile.title}</span> */}
-                        </div>
+                        <Logo className='h-10 w-10' />
+                        <span className='text-xl font-semibold leading-tight' style={{ fontFamily: 'Kanit, sans-serif' }}>Roadlink</span>
                     </div>
                     <div className='flex items-center gap-4'>
                         <ThemeSwitch />

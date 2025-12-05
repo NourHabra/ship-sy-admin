@@ -11,4 +11,7 @@ const invoicesSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/invoices/')({
   validateSearch: invoicesSearchSchema,
   component: Invoices,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

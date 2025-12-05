@@ -3,4 +3,7 @@ import { Otp } from '@/features/auth/otp'
 
 export const Route = createFileRoute('/(auth)/otp')({
   component: Otp,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

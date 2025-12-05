@@ -24,11 +24,9 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size='lg' className='hover:bg-transparent'>
-              <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                <Logo className='size-4' />
-              </div>
+              <Logo className='size-8' />
               <div className='flex flex-1 items-center text-start'>
-                <span className='truncate font-semibold'>SyriaShip</span>
+                <span className='truncate font-semibold' style={{ fontFamily: 'Kanit, sans-serif' }}>Roadlink</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

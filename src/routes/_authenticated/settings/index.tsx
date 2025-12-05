@@ -3,4 +3,7 @@ import { SettingsProfile } from '@/features/settings/profile'
 
 export const Route = createFileRoute('/_authenticated/settings/')({
   component: SettingsProfile,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

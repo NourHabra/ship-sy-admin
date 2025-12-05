@@ -11,4 +11,7 @@ const paymentsSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/payments/')({
   validateSearch: paymentsSearchSchema,
   component: Payments,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

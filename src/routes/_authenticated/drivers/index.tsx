@@ -9,4 +9,7 @@ const driverSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/drivers/')({
   validateSearch: driverSearchSchema,
   component: Drivers,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })

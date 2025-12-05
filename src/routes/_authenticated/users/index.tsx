@@ -12,4 +12,7 @@ const customersSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/users/')({
   validateSearch: customersSearchSchema,
   component: Users,
+  beforeLoad: () => {
+    document.title = 'Roadlink'
+  },
 })
