@@ -46,29 +46,29 @@ const createFormSchema = (t: any) =>
         .max(50, t.driverProfile.validation.lastNameMax),
       nationalNumber: z
         .string()
-        .min(5, 'National number must be at least 5 characters')
-        .max(20, 'National number must be at most 20 characters'),
+        .min(5, t.driverProfile.validation.nationalNumberMin)
+        .max(20, t.driverProfile.validation.nationalNumberMax),
       dateOfBirth: z.string().min(1, t.driverProfile.validation.dateOfBirthRequired),
-      placeOfBirth: z.string().min(2, 'Place of birth is required'),
+      placeOfBirth: z.string().min(2, t.driverProfile.validation.placeOfBirthRequired),
       phone: z
         .string()
-        .min(9, 'Mobile number must be 9 digits')
-        .max(9, 'Mobile number must be 9 digits')
-        .regex(/^9\d{8}$/, 'Mobile number must start with 9 and be 9 digits'),
+        .min(9, t.driverProfile.validation.phoneNumberDigits)
+        .max(9, t.driverProfile.validation.phoneNumberDigits)
+        .regex(/^9\d{8}$/, t.driverProfile.validation.phoneNumberFormat),
       address: z
         .string()
         .min(5, t.driverProfile.validation.addressMin)
         .max(200, t.driverProfile.validation.addressMax),
       city: z.string().min(2, t.driverProfile.validation.cityRequired),
-      country: z.string().min(1, 'Country is required'),
+      country: z.string().min(1, t.driverProfile.validation.countryRequired),
       
       // License Information
       licenseNumber: z
         .string()
         .min(5, t.driverProfile.validation.licenseNumberMin)
         .max(20, t.driverProfile.validation.licenseNumberMax),
-      licenseType: z.string().min(1, 'License type is required'),
-      licenseIssueDate: z.string().min(1, 'License issue date is required'),
+      licenseType: z.string().min(1, t.driverProfile.validation.licenseTypeRequired),
+      licenseIssueDate: z.string().min(1, t.driverProfile.validation.licenseIssueDateRequired),
       licenseExpiryDate: z.string().min(1, t.driverProfile.validation.licenseExpiryRequired),
       
       // Account Credentials
@@ -224,32 +224,21 @@ export function DriverProfileForm({
         console.error('Error setting user role:', roleError)
       }
 
-      // Step 4: If email confirmation is required, show message
-      // Otherwise, sign in the user automatically
+      // Step 4: Redirect to login page after successful profile creation
       if (authData.session) {
         // User is automatically signed in (email confirmation disabled)
-        const authUser = {
-          id: authData.user.id,
-          email: authData.user.email || '',
-          role: [ROLES.DRIVER],
-        }
-        auth.setSupabaseUser(authData.user)
-        auth.setUser(authUser)
-        auth.setAccessToken(authData.session.access_token)
-
-        toast.success(t.driverProfile.success, {
-          description: t.driverProfile.successDescription,
-        })
-
-        // Navigate to dashboard
-        navigate({ to: '/', replace: true })
-      } else {
-        // Email confirmation required
-        toast.success(t.driverProfile.success, {
-          description: 'Please check your email to confirm your account.',
-        })
-        navigate({ to: '/sign-in', replace: true })
+        // Sign out to ensure they log in manually
+        await supabase.auth.signOut()
       }
+
+      toast.success(t.driverProfile.success, {
+        description: authData.session 
+          ? t.driverProfile.successDescription 
+          : 'Please check your email to confirm your account.',
+      })
+
+      // Navigate to login page
+      navigate({ to: '/sign-in', replace: true })
     } catch (error: any) {
       console.error('Driver sign-up error:', error)
       toast.error('Sign-up failed', {
