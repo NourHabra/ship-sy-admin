@@ -88,16 +88,17 @@ export function SignUpForm({
         }
         
         // Set user role in database
-        await supabase
+        const { error: roleError } = await supabase
           .from('user_roles')
           .insert({
             id: authData.user.id,
             role: ROLES.CUSTOMER,
           })
-          .catch((error) => {
-            // Log error but don't fail sign-up
-            console.error('Error setting user role:', error)
-          })
+        
+        if (roleError) {
+          // Log error but don't fail sign-up
+          console.error('Error setting user role:', roleError)
+        }
         auth.setSupabaseUser(authData.user)
         auth.setUser(authUser)
         auth.setAccessToken(authData.session.access_token)

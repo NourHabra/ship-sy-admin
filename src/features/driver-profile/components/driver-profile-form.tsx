@@ -60,7 +60,7 @@ const createFormSchema = (t: any) =>
         .min(5, t.driverProfile.validation.addressMin)
         .max(200, t.driverProfile.validation.addressMax),
       city: z.string().min(2, t.driverProfile.validation.cityRequired),
-      country: z.string().default('Syria'),
+      country: z.string().min(1, 'Country is required'),
       
       // License Information
       licenseNumber: z

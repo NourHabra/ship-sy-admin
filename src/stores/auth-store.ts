@@ -94,12 +94,14 @@ supabase.auth.onAuthStateChange((event, session) => {
   
   if (event === 'SIGNED_IN' && session?.user && session?.access_token) {
     // Get user role from database
-    supabase
-      .from('user_roles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-      .then(({ data: userRoleData }) => {
+    void (async () => {
+      try {
+        const { data: userRoleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+
         const authUser: AuthUser = {
           id: session.user.id,
           email: session.user.email || '',
@@ -108,8 +110,7 @@ supabase.auth.onAuthStateChange((event, session) => {
         useAuthStore.getState().auth.setSupabaseUser(session.user)
         useAuthStore.getState().auth.setUser(authUser)
         useAuthStore.getState().auth.setAccessToken(session.access_token)
-      })
-      .catch(() => {
+      } catch {
         // Fallback if role fetch fails
         const authUser: AuthUser = {
           id: session.user.id,
@@ -119,7 +120,8 @@ supabase.auth.onAuthStateChange((event, session) => {
         useAuthStore.getState().auth.setSupabaseUser(session.user)
         useAuthStore.getState().auth.setUser(authUser)
         useAuthStore.getState().auth.setAccessToken(session.access_token)
-      })
+      }
+    })()
   } else if (event === 'SIGNED_OUT') {
     auth.reset()
   }
