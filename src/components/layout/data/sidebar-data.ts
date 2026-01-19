@@ -58,7 +58,7 @@ export const getSidebarData = (t: Translation): SidebarData => ({
       items: [
         {
           title: t.nav.createDriverProfile,
-          url: '/create-driver-profile',
+          url: '/sign-up/driver',
           icon: UserPlus,
         },
       ],
