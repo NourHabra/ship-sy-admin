@@ -2,8 +2,13 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate } from '@tanstack/react-router'
 import { useLanguage } from '@/context/language-provider'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'
+import { useAuthStore } from '@/stores/auth-store'
+import { ROLES } from '@/lib/roles'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -25,7 +30,9 @@ const createFormSchema = (t: any) => z
     password: z
       .string()
       .min(1, t.auth.passwordRequired)
-      .min(7, t.auth.passwordMin),
+      .min(8, t.auth.passwordMin)
+      .regex(/[a-zA-Z]/, t.auth.passwordMustContainLetter)
+      .regex(/[0-9]/, t.auth.passwordMustContainDigit),
     confirmPassword: z.string().min(1, t.auth.confirmPasswordRequired),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -39,6 +46,8 @@ export function SignUpForm({
 }: React.HTMLAttributes<HTMLFormElement>) {
   const [isLoading, setIsLoading] = useState(false)
   const { t } = useLanguage()
+  const navigate = useNavigate()
+  const { auth } = useAuthStore()
 
   const formSchema = createFormSchema(t)
 
@@ -51,14 +60,63 @@ export function SignUpForm({
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
 
-    setTimeout(() => {
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      })
+
+      if (authError) {
+        throw authError
+      }
+
+      if (!authData.user) {
+        throw new Error('Failed to create user account')
+      }
+
+      // If email confirmation is required, show message
+      // Otherwise, sign in the user automatically
+      if (authData.session) {
+        // User is automatically signed in (email confirmation disabled)
+        const authUser = {
+          id: authData.user.id,
+          email: authData.user.email || '',
+          role: [ROLES.CUSTOMER],
+        }
+        
+        // Set user role in database
+        await supabase
+          .from('user_roles')
+          .insert({
+            id: authData.user.id,
+            role: ROLES.CUSTOMER,
+          })
+          .catch((error) => {
+            // Log error but don't fail sign-up
+            console.error('Error setting user role:', error)
+          })
+        auth.setSupabaseUser(authData.user)
+        auth.setUser(authUser)
+        auth.setAccessToken(authData.session.access_token)
+
+        toast.success('Account created successfully!')
+        navigate({ to: '/', replace: true })
+      } else {
+        // Email confirmation required
+        toast.success('Account created! Please check your email to confirm your account.')
+        navigate({ to: '/sign-in', replace: true })
+      }
+    } catch (error: any) {
+      console.error('Sign-up error:', error)
+      toast.error('Sign-up failed', {
+        description: error.message || 'An error occurred during sign-up. Please try again.',
+      })
+    } finally {
       setIsLoading(false)
-    }, 3000)
+    }
   }
 
   return (

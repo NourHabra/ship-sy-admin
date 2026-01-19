@@ -88,6 +88,9 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// Initialize auth state from Supabase session
+useAuthStore.getState().auth.initialize()
+
 // Render the app
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {

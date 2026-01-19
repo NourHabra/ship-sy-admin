@@ -7,7 +7,9 @@ import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { useLanguage } from '@/context/language-provider'
-import { sleep, cn } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'
+import { ROLES } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -54,34 +56,54 @@ export function UserAuthForm({
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
-    toast.promise(sleep(2000), {
-      loading: t.auth.signingIn,
-      success: () => {
-        setIsLoading(false)
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      })
 
-        // Mock successful authentication with expiry computed at success time
-        const mockUser = {
-          accountNo: 'ACC001',
-          email: data.email,
-          role: ['user'],
-          exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-        }
+      if (authError) {
+        throw authError
+      }
 
-        // Set user and access token
-        auth.setUser(mockUser)
-        auth.setAccessToken('mock-access-token')
+      if (!authData.user || !authData.session) {
+        throw new Error('Failed to sign in')
+      }
 
-        // Redirect to the stored location or default to dashboard
-        const targetPath = redirectTo || '/'
-        navigate({ to: targetPath, replace: true })
+      // Set user and access token
+      // Get user role from database
+      const { data: userRoleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('id', authData.user.id)
+        .single()
 
-        return `${t.auth.welcomeBack}, ${data.email}!`
-      },
-      error: 'Error',
-    })
+      const authUser = {
+        id: authData.user.id,
+        email: authData.user.email || '',
+        role: userRoleData?.role ? [userRoleData.role] : [ROLES.CUSTOMER],
+      }
+
+      auth.setSupabaseUser(authData.user)
+      auth.setUser(authUser)
+      auth.setAccessToken(authData.session.access_token)
+
+      // Redirect to the stored location or default to dashboard
+      const targetPath = redirectTo || '/'
+      navigate({ to: targetPath, replace: true })
+
+      toast.success(`${t.auth.welcomeBack}, ${data.email}!`)
+    } catch (error: any) {
+      console.error('Sign-in error:', error)
+      toast.error('Sign-in failed', {
+        description: error.message || 'Invalid email or password. Please try again.',
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
