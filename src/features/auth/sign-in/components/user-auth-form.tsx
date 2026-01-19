@@ -28,8 +28,7 @@ const createFormSchema = (t: any) => z.object({
   }),
   password: z
     .string()
-    .min(1, t.auth.passwordRequired)
-    .min(7, t.auth.passwordMin),
+    .min(1, t.auth.passwordRequired),
 })
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
@@ -120,7 +119,7 @@ export function UserAuthForm({
             <FormItem>
               <FormLabel>{t.auth.email}</FormLabel>
               <FormControl>
-                <Input placeholder={t.auth.emailPlaceholder} {...field} />
+                <Input placeholder={t.auth.emailPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,7 +132,7 @@ export function UserAuthForm({
             <FormItem className='relative'>
               <FormLabel>{t.auth.password}</FormLabel>
               <FormControl>
-                <PasswordInput placeholder={t.auth.passwordPlaceholder} {...field} />
+                <PasswordInput placeholder={t.auth.passwordPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
               <Link

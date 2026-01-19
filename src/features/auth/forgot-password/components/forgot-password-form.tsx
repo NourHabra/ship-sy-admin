@@ -70,7 +70,7 @@ export function ForgotPasswordForm({
             <FormItem>
               <FormLabel>{t.auth.email}</FormLabel>
               <FormControl>
-                <Input placeholder={t.auth.emailPlaceholder} {...field} />
+                <Input placeholder={t.auth.emailPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

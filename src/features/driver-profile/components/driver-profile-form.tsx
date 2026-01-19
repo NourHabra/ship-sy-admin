@@ -589,6 +589,7 @@ export function DriverProfileForm({
                       placeholder={t.driverProfile.emailPlaceholder}
                       autoComplete='off'
                       data-form-type='other'
+                      dir='ltr'
                       {...field}
                     />
                   </FormControl>
@@ -607,6 +608,7 @@ export function DriverProfileForm({
                       placeholder={t.driverProfile.passwordPlaceholder}
                       autoComplete='new-password'
                       data-form-type='other'
+                      dir='ltr'
                       {...field}
                     />
                   </FormControl>
@@ -625,6 +627,7 @@ export function DriverProfileForm({
                       placeholder={t.driverProfile.passwordPlaceholder}
                       autoComplete='new-password'
                       data-form-type='other'
+                      dir='ltr'
                       {...field}
                     />
                   </FormControl>

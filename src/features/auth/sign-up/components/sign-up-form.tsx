@@ -133,7 +133,7 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>{t.auth.email}</FormLabel>
               <FormControl>
-                <Input placeholder={t.auth.emailPlaceholder} {...field} />
+                <Input placeholder={t.auth.emailPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,7 +146,7 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>{t.auth.password}</FormLabel>
               <FormControl>
-                <PasswordInput placeholder={t.auth.passwordPlaceholder} {...field} />
+                <PasswordInput placeholder={t.auth.passwordPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -159,7 +159,7 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>{t.auth.confirmPassword}</FormLabel>
               <FormControl>
-                <PasswordInput placeholder={t.auth.passwordPlaceholder} {...field} />
+                <PasswordInput placeholder={t.auth.passwordPlaceholder} dir='ltr' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

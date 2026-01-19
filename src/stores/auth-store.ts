@@ -120,10 +120,6 @@ supabase.auth.onAuthStateChange((event, session) => {
         useAuthStore.getState().auth.setUser(authUser)
         useAuthStore.getState().auth.setAccessToken(session.access_token)
       })
-    return
-    auth.setSupabaseUser(session.user)
-    auth.setUser(authUser)
-    auth.setAccessToken(session.access_token)
   } else if (event === 'SIGNED_OUT') {
     auth.reset()
   }
