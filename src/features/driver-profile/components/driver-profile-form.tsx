@@ -28,7 +28,6 @@ import {
 import { MobileDatePicker } from '@/components/mobile-date-picker'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
-import { useAuthStore } from '@/stores/auth-store'
 import { ROLES } from '@/lib/roles'
 import type { LicenseType } from '@/lib/supabase'
 
@@ -61,7 +60,7 @@ const createFormSchema = (t: any) =>
         .max(200, t.driverProfile.validation.addressMax),
       city: z.string().min(2, t.driverProfile.validation.cityRequired),
       country: z.string().min(1, t.driverProfile.validation.countryRequired),
-      
+
       // License Information
       licenseNumber: z
         .string()
@@ -70,7 +69,7 @@ const createFormSchema = (t: any) =>
       licenseType: z.string().min(1, t.driverProfile.validation.licenseTypeRequired),
       licenseIssueDate: z.string().min(1, t.driverProfile.validation.licenseIssueDateRequired),
       licenseExpiryDate: z.string().min(1, t.driverProfile.validation.licenseExpiryRequired),
-      
+
       // Account Credentials
       email: z
         .string()
@@ -102,7 +101,6 @@ export function DriverProfileForm({
   const [loadingLicenseTypes, setLoadingLicenseTypes] = useState(true)
   const { t } = useLanguage()
   const navigate = useNavigate()
-  const { auth } = useAuthStore()
 
   const formSchema = createFormSchema(t)
 
@@ -185,7 +183,7 @@ export function DriverProfileForm({
       // Step 2: Create driver record in the database
       // Format phone number with +963 prefix
       const formattedPhone = `+963${data.phone}`
-      
+
       const { error: driverError } = await supabase
         .from('drivers')
         .insert({
@@ -232,8 +230,8 @@ export function DriverProfileForm({
       }
 
       toast.success(t.driverProfile.success, {
-        description: authData.session 
-          ? t.driverProfile.successDescription 
+        description: authData.session
+          ? t.driverProfile.successDescription
           : 'Please check your email to confirm your account.',
       })
 
