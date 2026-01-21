@@ -73,6 +73,9 @@ export const ar: Translation = {
     haventReceived: 'لم تستلمه؟',
     resendCode: 'إعادة إرسال رمز جديد.',
     otpRequired: 'الرجاء إدخال الرمز المكون من 6 أرقام.',
+    or: 'أو',
+    signUpAsDriver: 'التسجيل كسائق',
+    loginInstead: 'تسجيل الدخول بدلاً من ذلك',
   },
 
   // Dashboard

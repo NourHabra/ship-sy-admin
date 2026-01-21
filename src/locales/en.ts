@@ -71,6 +71,9 @@ export const en = {
     haventReceived: "Haven't received it?",
     resendCode: 'Resend a new code.',
     otpRequired: 'Please enter the 6-digit code.',
+    or: 'Or',
+    signUpAsDriver: 'Sign up as a driver',
+    loginInstead: 'Login instead',
   },
 
   // Dashboard

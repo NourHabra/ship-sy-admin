@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, Link } from '@tanstack/react-router'
 import { useLanguage } from '@/context/language-provider'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -944,6 +944,23 @@ export function DriverProfileForm({
         <Button type='submit' className='w-full' disabled={isLoading} size='lg'>
           {isLoading ? t.driverProfile.submitting : t.driverProfile.submit}
         </Button>
+
+        <div className='relative mt-4'>
+          <div className='absolute inset-0 flex items-center'>
+            <Separator />
+          </div>
+          <div className='relative flex justify-center text-xs uppercase'>
+            <span className='bg-background px-2 text-muted-foreground'>
+              {t.auth.or || 'Or'}
+            </span>
+          </div>
+        </div>
+
+        <Link to='/sign-in'>
+          <Button variant='outline' className='w-full mt-4' size='lg'>
+            {t.auth.loginInstead || 'Login instead'}
+          </Button>
+        </Link>
       </form>
     </Form>
   )
