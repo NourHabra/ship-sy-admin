@@ -121,9 +121,14 @@ export function UserAuthForm({
       }
 
       // Redirect based on user role
-      let targetPath = redirectTo || '/'
-      if (!redirectTo && userRole === ROLES.DRIVER) {
+      let targetPath = '/'
+
+      if (userRole === ROLES.DRIVER) {
+        // Drivers always go to driver dashboard
         targetPath = '/dashboard/driver'
+      } else if (redirectTo && redirectTo !== '/sign-in') {
+        // Use redirectTo if provided and it's not the sign-in page
+        targetPath = redirectTo
       }
 
       navigate({ to: targetPath, replace: true })
