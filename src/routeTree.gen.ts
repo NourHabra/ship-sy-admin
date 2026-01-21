@@ -34,6 +34,7 @@ import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedDashboardDriverRouteImport } from './routes/_authenticated/dashboard/driver'
 import { Route as authSignUpDriverRouteImport } from './routes/(auth)/sign-up/driver'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -172,6 +173,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDashboardDriverRoute =
+  AuthenticatedDashboardDriverRouteImport.update({
+    id: '/dashboard/driver',
+    path: '/dashboard/driver',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const authSignUpDriverRoute = authSignUpDriverRouteImport.update({
   id: '/(auth)/sign-up/driver',
   path: '/sign-up/driver',
@@ -191,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/sign-up/driver': typeof authSignUpDriverRoute
+  '/dashboard/driver': typeof AuthenticatedDashboardDriverRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -217,6 +225,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/sign-up/driver': typeof authSignUpDriverRoute
+  '/dashboard/driver': typeof AuthenticatedDashboardDriverRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -246,6 +255,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/(auth)/sign-up/driver': typeof authSignUpDriverRoute
+  '/_authenticated/dashboard/driver': typeof AuthenticatedDashboardDriverRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/sign-up/driver'
+    | '/dashboard/driver'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/sign-up/driver'
+    | '/dashboard/driver'
     | '/errors/$error'
     | '/settings/account'
     | '/settings/appearance'
@@ -329,6 +341,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/'
     | '/(auth)/sign-up/driver'
+    | '/_authenticated/dashboard/driver'
     | '/_authenticated/errors/$error'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
@@ -536,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/driver': {
+      id: '/_authenticated/dashboard/driver'
+      path: '/dashboard/driver'
+      fullPath: '/dashboard/driver'
+      preLoaderRoute: typeof AuthenticatedDashboardDriverRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/(auth)/sign-up/driver': {
       id: '/(auth)/sign-up/driver'
       path: '/sign-up/driver'
@@ -572,6 +592,7 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedDashboardDriverRoute: typeof AuthenticatedDashboardDriverRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedDriversIndexRoute: typeof AuthenticatedDriversIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
@@ -584,6 +605,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedDashboardDriverRoute: AuthenticatedDashboardDriverRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedDriversIndexRoute: AuthenticatedDriversIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,

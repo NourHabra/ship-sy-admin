@@ -10,9 +10,18 @@ import {
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 import { type Translation } from '@/locales'
+import { ROLES } from '@/lib/roles'
 
-export const getSidebarData = (t: Translation): SidebarData => ({
-  navGroups: [
+export const getSidebarData = (t: Translation, userRole?: string): SidebarData => {
+  // For drivers, return empty sidebar
+  if (userRole === ROLES.DRIVER) {
+    return {
+      navGroups: [],
+    }
+  }
+
+  return {
+    navGroups: [
     {
       title: t.nav.general,
       items: [
@@ -135,5 +144,6 @@ export const getSidebarData = (t: Translation): SidebarData => ({
     //     },
     //   ],
     // },
-  ],
-})
+    ],
+  }
+}

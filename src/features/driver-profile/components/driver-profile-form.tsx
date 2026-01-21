@@ -29,7 +29,8 @@ import { MobileDatePicker } from '@/components/mobile-date-picker'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { ROLES } from '@/lib/roles'
-import type { LicenseType } from '@/lib/supabase'
+import type { LicenseType, VehicleType } from '@/lib/supabase'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const createFormSchema = (t: any) =>
   z
@@ -84,6 +85,25 @@ const createFormSchema = (t: any) =>
       confirmPassword: z
         .string()
         .min(1, t.driverProfile.validation.confirmPasswordRequired),
+
+      // Vehicle Information
+      vehicleType: z.string().min(1, t.driverProfile.validation.vehicleTypeRequired),
+      vehicleMake: z.string().min(1, t.driverProfile.validation.vehicleMakeRequired),
+      vehicleModel: z.string().min(1, t.driverProfile.validation.vehicleModelRequired),
+      vehicleYear: z
+        .string()
+        .min(1, t.driverProfile.validation.vehicleYearInvalid)
+        .regex(/^\d{4}$/, t.driverProfile.validation.vehicleYearInvalid)
+        .refine((val) => {
+          const year = parseInt(val)
+          return year >= 1900 && year <= new Date().getFullYear() + 1
+        }, t.driverProfile.validation.vehicleYearInvalid),
+      vehicleVinNumber: z.string().optional(),
+      vehicleHeadAxes: z.string().optional(),
+      vehicleTailAxes: z.string().optional(),
+      vehicleEmptyWeight: z.string().optional(),
+      vehicleStandingWeight: z.string().optional(),
+      vehicleIsChilled: z.boolean().optional(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t.driverProfile.validation.passwordsDontMatch,
@@ -99,6 +119,8 @@ export function DriverProfileForm({
   const [isLoading, setIsLoading] = useState(false)
   const [licenseTypes, setLicenseTypes] = useState<LicenseType[]>([])
   const [loadingLicenseTypes, setLoadingLicenseTypes] = useState(true)
+  const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([])
+  const [loadingVehicleTypes, setLoadingVehicleTypes] = useState(true)
   const { t } = useLanguage()
   const navigate = useNavigate()
 
@@ -123,6 +145,16 @@ export function DriverProfileForm({
       email: '',
       password: '',
       confirmPassword: '',
+      vehicleType: '',
+      vehicleMake: '',
+      vehicleModel: '',
+      vehicleYear: '',
+      vehicleVinNumber: '',
+      vehicleHeadAxes: '',
+      vehicleTailAxes: '',
+      vehicleEmptyWeight: '',
+      vehicleStandingWeight: '',
+      vehicleIsChilled: false,
     },
   })
 
@@ -153,6 +185,35 @@ export function DriverProfileForm({
     }
 
     loadLicenseTypes()
+  }, [])
+
+  // Load vehicle types on mount
+  useEffect(() => {
+    async function loadVehicleTypes() {
+      try {
+        const { data, error } = await supabase
+          .from('vehicle_types')
+          .select('id, name_en, name_ar, description_en, description_ar, standing_weight')
+          .order('id')
+
+        if (error) {
+          console.error('Vehicle types query error:', error)
+          throw error
+        }
+
+        console.log('Loaded vehicle types:', data)
+        setVehicleTypes(data || [])
+      } catch (error: any) {
+        console.error('Error loading vehicle types:', error)
+        toast.error('Failed to load vehicle types', {
+          description: error.message || 'Please refresh the page and try again.',
+        })
+      } finally {
+        setLoadingVehicleTypes(false)
+      }
+    }
+
+    loadVehicleTypes()
   }, [])
 
   async function onSubmit(data: DriverProfileFormValues) {
@@ -222,7 +283,30 @@ export function DriverProfileForm({
         console.error('Error setting user role:', roleError)
       }
 
-      // Step 4: Redirect to login page after successful profile creation
+      // Step 4: Create vehicle record
+      const vehicleData: any = {
+        driver_id: authData.user.id,
+        type_id: parseInt(data.vehicleType),
+        make: data.vehicleMake || null,
+        model: data.vehicleModel || null,
+        year: data.vehicleYear || null,
+        vin_number: data.vehicleVinNumber || null,
+        head_axes: data.vehicleHeadAxes ? parseFloat(data.vehicleHeadAxes) : null,
+        tail_axes: data.vehicleTailAxes ? parseFloat(data.vehicleTailAxes) : null,
+        empty_weight: data.vehicleEmptyWeight ? parseFloat(data.vehicleEmptyWeight) : null,
+        standing_weight: data.vehicleStandingWeight ? parseFloat(data.vehicleStandingWeight) : null,
+        is_chilled: data.vehicleIsChilled || false,
+      }
+
+      const { error: vehicleError } = await supabase
+        .from('vehicles')
+        .insert(vehicleData)
+
+      if (vehicleError) {
+        throw vehicleError
+      }
+
+      // Step 5: Redirect to login page after successful profile creation
       if (authData.session) {
         // User is automatically signed in (email confirmation disabled)
         // Sign out to ensure they log in manually
@@ -549,6 +633,238 @@ export function DriverProfileForm({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        <Separator />
+
+        {/* Vehicle Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t.driverProfile.vehicleInfo}</CardTitle>
+            <CardDescription>{t.driverProfile.vehicleInfoDescription}</CardDescription>
+          </CardHeader>
+          <CardContent className='grid gap-4 sm:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='vehicleType'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleType}</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={loadingVehicleTypes}
+                    >
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder={t.driverProfile.vehicleTypePlaceholder} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {loadingVehicleTypes ? (
+                          <SelectItem value='loading' disabled>
+                            Loading...
+                          </SelectItem>
+                        ) : vehicleTypes.length === 0 ? (
+                          <SelectItem value='none' disabled>
+                            No vehicle types available
+                          </SelectItem>
+                        ) : (
+                          vehicleTypes.map((type) => {
+                            const isArabic = t.driverProfile.vehicleType === 'نوع المركبة'
+                            const displayName = isArabic ? type.name_ar : type.name_en
+                            const description = isArabic ? type.description_ar : type.description_en
+                            const displayText = description
+                              ? `${displayName || `Type ${type.id}`} - ${description}`
+                              : displayName || `Type ${type.id}`
+                            return (
+                              <SelectItem key={type.id} value={type.id.toString()}>
+                                {displayText}
+                              </SelectItem>
+                            )
+                          })
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className='sm:col-span-2 grid gap-4 sm:grid-cols-2'>
+              <FormField
+                control={form.control}
+                name='vehicleMake'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.driverProfile.vehicleMake}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t.driverProfile.vehicleMakePlaceholder} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='vehicleModel'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.driverProfile.vehicleModel}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t.driverProfile.vehicleModelPlaceholder} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name='vehicleYear'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleYear}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='text'
+                      placeholder={t.driverProfile.vehicleYearPlaceholder}
+                      maxLength={4}
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleVinNumber'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleVinNumber || 'VIN Number'}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t.driverProfile.vehicleVinNumberPlaceholder || 'VIN Number'}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleHeadAxes'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleHeadAxes || 'Number of Head Axes'}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='text'
+                      placeholder={t.driverProfile.vehicleHeadAxesPlaceholder || 'Number of head axes'}
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleTailAxes'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleTailAxes || 'Number of Tail Axes'}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='text'
+                      placeholder={t.driverProfile.vehicleTailAxesPlaceholder || 'Number of tail axes'}
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleEmptyWeight'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t.driverProfile.vehicleEmptyWeight || 'Empty Weight (Tons)'}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='text'
+                      placeholder={t.driverProfile.vehicleEmptyWeightPlaceholder || 'Empty Weight'}
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleStandingWeight'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t.driverProfile.vehicleStandingWeight || 'Standing Weight (Tons)'}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type='text'
+                      placeholder={
+                        t.driverProfile.vehicleStandingWeightPlaceholder || 'Standing Weight'
+                      }
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='vehicleIsChilled'
+              render={({ field }) => (
+                <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 sm:col-span-2'>
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className='space-y-1 leading-none'>
+                    <FormLabel>{t.driverProfile.isChilled}</FormLabel>
+                    <p className='text-sm text-muted-foreground'>
+                      {t.driverProfile.isChilledDescription}
+                    </p>
+                  </div>
                 </FormItem>
               )}
             />

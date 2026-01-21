@@ -36,6 +36,30 @@ export interface LicenseType {
   name_ar: string
 }
 
+export interface VehicleType {
+  id: number
+  name_en: string | null
+  name_ar: string | null
+  description_en: string | null
+  description_ar: string | null
+  standing_weight: number | null
+}
+
+export interface Vehicle {
+  id: number
+  make: string | null
+  model: string | null
+  year: string | null
+  driver_id: string | null
+  type_id: number | null
+  head_axes: number | null
+  tail_axes: number | null
+  vin_number: string | null
+  empty_weight: number | null
+  standing_weight: number | null
+  is_chilled: boolean | null
+}
+
 export interface Role {
   id: number
   name: string

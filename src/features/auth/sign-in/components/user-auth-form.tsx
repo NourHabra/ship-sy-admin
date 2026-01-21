@@ -80,21 +80,55 @@ export function UserAuthForm({
         .eq('id', authData.user.id)
         .single()
 
+      const userRole = userRoleData?.role || ROLES.CUSTOMER
       const authUser = {
         id: authData.user.id,
         email: authData.user.email || '',
-        role: userRoleData?.role ? [userRoleData.role] : [ROLES.CUSTOMER],
+        role: [userRole],
       }
 
       auth.setSupabaseUser(authData.user)
       auth.setUser(authUser)
       auth.setAccessToken(authData.session.access_token)
 
-      // Redirect to the stored location or default to dashboard
-      const targetPath = redirectTo || '/'
+      // Fetch user's first name for toast message
+      let firstName = ''
+      try {
+        if (userRole === ROLES.DRIVER) {
+          // Fetch from drivers table
+          const { data: driverData } = await supabase
+            .from('drivers')
+            .select('first_name')
+            .eq('id', authData.user.id)
+            .single()
+
+          if (driverData?.first_name) {
+            firstName = driverData.first_name
+          }
+        } else {
+          // Try to get from user metadata
+          firstName = authData.user.user_metadata?.first_name || ''
+        }
+
+        // Fallback to email username if no first name found
+        if (!firstName && authData.user.email) {
+          firstName = authData.user.email.split('@')[0]
+        }
+      } catch (error) {
+        console.error('Error fetching user first name:', error)
+        // Fallback to email username
+        firstName = authData.user.email?.split('@')[0] || ''
+      }
+
+      // Redirect based on user role
+      let targetPath = redirectTo || '/'
+      if (!redirectTo && userRole === ROLES.DRIVER) {
+        targetPath = '/dashboard/driver'
+      }
+
       navigate({ to: targetPath, replace: true })
 
-      toast.success(`${t.auth.welcomeBack}, ${data.email}!`)
+      toast.success(`${t.auth.welcomeBack}, ${firstName}!`)
     } catch (error: any) {
       console.error('Sign-in error:', error)
       toast.error('Sign-in failed', {

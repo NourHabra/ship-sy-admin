@@ -1,5 +1,6 @@
 import { useLayout } from '@/context/layout-provider'
 import { useLanguage } from '@/context/language-provider'
+import { useAuthStore } from '@/stores/auth-store'
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +17,9 @@ import { NavGroup } from './nav-group'
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { t } = useLanguage()
-  const sidebarData = getSidebarData(t)
+  const { auth } = useAuthStore()
+  const userRole = auth.user?.role?.[0]
+  const sidebarData = getSidebarData(t, userRole)
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>

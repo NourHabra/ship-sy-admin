@@ -16,17 +16,34 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
   const { t } = useLanguage()
 
   const handleSignOut = async () => {
-    // Sign out from Supabase
-    await supabase.auth.signOut()
-    // Reset local auth state
-    auth.reset()
-    // Preserve current location for redirect after sign-in
-    const currentPath = location.href
-    navigate({
-      to: '/sign-in',
-      search: { redirect: currentPath },
-      replace: true,
-    })
+    try {
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error('Error signing out:', error)
+        // Continue with sign out even if there's an error
+      }
+      
+      // Reset local auth state
+      auth.reset()
+      
+      // Preserve current location for redirect after sign-in
+      const currentPath = location.href
+      navigate({
+        to: '/sign-in',
+        search: { redirect: currentPath },
+        replace: true,
+      })
+    } catch (error) {
+      console.error('Error during sign out:', error)
+      // Still reset local state and navigate
+      auth.reset()
+      navigate({
+        to: '/sign-in',
+        replace: true,
+      })
+    }
   }
 
   return (
