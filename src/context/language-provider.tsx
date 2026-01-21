@@ -5,7 +5,7 @@ import { useDirection } from './direction-provider'
 
 export type Language = 'en' | 'ar'
 
-const DEFAULT_LANGUAGE: Language = 'en'
+const DEFAULT_LANGUAGE: Language = 'ar'
 const LANGUAGE_COOKIE_NAME = 'lang'
 const LANGUAGE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
@@ -36,7 +36,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } else {
       setDir('ltr')
     }
-    
+
     // Update HTML lang attribute
     document.documentElement.setAttribute('lang', language)
   }, [language, setDir])
